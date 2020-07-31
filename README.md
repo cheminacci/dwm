@@ -4,4 +4,6 @@ Super+Enter opens an st terminal.
 
 This config assumes that st and rofi are installed. Keybindings are commented in the config.h file to describe key behavior.
 
+Have added the alpha patch for bar and border transparency, and true gaps,... 
+
 More changes to come as time goes on.
