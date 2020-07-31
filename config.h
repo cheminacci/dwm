@@ -1,27 +1,33 @@
-/* See LICENSE file for copyright and license details. */
-
 /* appearance */
-
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int gappx     = 5;        /*gap pixel between windows */
 static const unsigned int snap      = 22;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "noto sans mono:size=9" };
-static const char dmenufont[]       = "noto sans mono:size=9";
+static const char *fonts[]          = { "Noto Sans Bold:size=9" };
+static const char dmenufont[]       = "Noto Sans Bold:size=9";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const char col_black[]	    = "#000000"; /*black*/
-static const char col_white[]	    = "#ffffff"; /*white*/
-static const char col_midblue[]     = "#000033"; /*midnight blue*/
+static const char col_black[]       = "#000000"; /*black*/
+static const char col_white[]       = "#ffffff"; /*white*/
+static const char col_midblue[]     = "#000130"; /*midnight blue*/
 static const char col_royal[]       = "#000066"; /*royal blue*/
-static const char col_icy[]	    = "#98d8ea"; /*icy blue*/
+static const char col_icy[]         = "#98d8ea"; /*icy blue*/
+
+static const unsigned int baralpha = 0x55;
+static const unsigned int borderalpha = 0xcc;
 static const char *colors[][3]      = {
-	/*               fg (fonts)  bg (bars)   border   */
-	[SchemeNorm] = { col_gray3, col_black, col_gray1 }, /* unselected */
-	[SchemeSel]  = { col_gray4, col_midblue, col_icy }, /*selected*/
+	/*               fg         bg         border   */
+	[SchemeNorm] = { col_gray3, col_black, col_gray1 },
+	[SchemeSel]  = { col_gray4, col_midblue,  col_icy  },
+};
+static const unsigned int alphas[][3]      = {
+	/*               fg      bg        border     */
+	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
+	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
 };
 
 /* tagging */
@@ -38,7 +44,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.5; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
@@ -51,6 +57,7 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask
+#define ALT    Mod1Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -61,22 +68,41 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-/* nb is normal background, sb is selected background, nf is normal font, sf is selected font */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_black, "-nf", col_gray3, "-sb", col_midblue, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 /* Custom Programs */
 static const char *roficmd[] = {"rofi", "-show", "run"};
+static const char *rofishow[] = {"rofi", "-show", "window"};
 static const char *screenlock[] = {"lock", NULL };
+static const char *volumeup[]= {"pulseaudio-ctl", "up"};
+static const char *volumedown[]= {"pulseaudio-ctl", "down"};
+static const char *volumemute[]= {"pulseaudio-ctl", "mute"};
 
+static const char *ranger[]= {"st", "ranger",NULL};
+static const char *browser[]= {"brave", NULL};
+static const char *mt4[]= {"mt4", NULL};
+static const char *thunar[]= {"thunar", NULL};
+static const char *screenshot[]= {"scrot", NULL};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } }, 	/* Opens dmenu */
+	{ MODKEY,                       XK_p,      spawn,         {.v = dmenucmd } }, 	/* Opens dmenu */
 	{ MODKEY,            		XK_Return, spawn,          {.v = termcmd } }, 	/* Opens a Terminal */
-	{ MODKEY,		        XK_m,	   spawn,          {.v = roficmd } }, 	/* Opens Rofi */
+	{ MODKEY,		        XK_m,	   spawn,          {.v = roficmd } }, 	/* Opens Rofi Search*/
+	{ MODKEY,		        XK_n,	   spawn,          {.v = rofishow } }, 	/* Rofi Open Window Search*/
 	{ MODKEY|ControlMask,		XK_l,	   spawn,          {.v = screenlock} }, /* Locks Screen */
+	{ MODKEY,                       XK_Prior,  spawn,          {.v = volumeup } }, 	/* Volume Up */
+	{ MODKEY,            		XK_Next,   spawn,          {.v = volumedown } }, 	/* Volume Down */
+	{ MODKEY,		        XK_End,	   spawn,          {.v = volumemute } }, 	/* Mute */
+	
+	{ MODKEY|ALT,          		XK_b, 	   spawn,          {.v = browser } }, 	/* Opens Web Browser */
+	{ MODKEY|ALT,		        XK_m,	   spawn,          {.v = mt4  } }, 		/* Opens MT4 */
+	{ MODKEY|ALT,			XK_r,	   spawn,          {.v = ranger} }, 	/* Opens Ranger in st */
+	{ MODKEY|ALT,			XK_t,	   spawn,          {.v = thunar} }, 	/* Opens GUI File Manager */
+	{ MODKEY,			XK_Insert, spawn,          {.v = screenshot} }, 	/* Takes a Screenshot */
+
 	{ MODKEY,                       XK_b,      togglebar,      {0} }, 		/* Toggles the TOP BAR on/off */
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } }, 	/* Move down in the stack */
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } }, 	/* Move up in the stack */
@@ -98,6 +124,12 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+
+         { MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
+         { MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
+         { MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
+
+
 	TAGKEYS(                        XK_1,                      0) 			/****** SWITCHES DESKTOPS BY NUMBER *******/
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -107,8 +139,11 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },		 /********** EXITS DWM SESSION **********/
+/*	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },	*/	 /********** EXITS DWM SESSION **********/
+
+	{ MODKEY|ShiftMask,             XK_F12,      quit,           {0} },		 /********** EXITS DWM SESSION **********/
 };
+
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
