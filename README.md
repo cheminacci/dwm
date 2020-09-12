@@ -8,4 +8,6 @@ This config assumes that st and rofi are installed. Keybindings are commented in
 
 Have added the alpha patch for bar and border transparency, and true gaps,... 
 
+The Fibonacci, and miniscule layouts have also been added.
+
 More changes to come as time goes on.
