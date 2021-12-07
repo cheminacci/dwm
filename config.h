@@ -1,6 +1,6 @@
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const unsigned int gappx     = 3;        /*gap pixel between windows */
+static const unsigned int gappx     = 2;        /*gap pixel between windows */
 static const unsigned int snap      = 22;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -8,7 +8,7 @@ static const char *fonts[]          = { "Noto Sans SemiBold:size=8" };
 static const char dmenufont[]       = "Noto Sans SemiBold:size=8";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#888888";
+static const char col_gray3[]       = "#aaaaaa";
 static const char col_gray4[]       = "#cccccc";
 static const char col_cyan[]        = "#005577";
 static const char col_black[]       = "#000000"; /*black*/
@@ -21,8 +21,8 @@ static const unsigned int baralpha = 0xAA;
 static const unsigned int borderalpha = 0xcc;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray4, col_black, col_gray1 },
-	[SchemeSel]  = { col_white, col_midblue,  col_icy  },
+	[SchemeNorm] = { col_gray3, col_black, col_gray1 },
+	[SchemeSel]  = { col_white, col_midblue,  col_icy },
 };
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
@@ -44,7 +44,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.65; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.5; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
@@ -75,9 +75,12 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_black, "-nf", col_gray3, "-sb", col_midblue, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "termite", NULL };
+static const char *termcmd[]  = { "st", NULL };
+static const char *fishtermcmd[]  = { "st", "fish", NULL };
+
 
 /* Custom Programs */
+
 static const char *roficmd[] = {"rofi", "-show", "run"};
 static const char *rofishow[] = {"rofi", "-show", "window"};
 static const char *screenlock[] = {"lock", NULL };
@@ -88,17 +91,27 @@ static const char *volumemute[]= {"pulseaudio-ctl", "mute"};
 static const char *brightnessup[]= {"light", "-A", "5","-O", NULL};
 static const char *brightnessdown[]= {"light", "-U", "5", "-O", NULL};
 
-static const char *ranger[]= {"termite", "ranger",NULL};
+static const char *ranger[]= {"st", "ranger", NULL};
 static const char *browser[]= {"brave", NULL};
 static const char *mt4[]= {"mt4", NULL};
 static const char *mt4edit[]= {"mt4editor", NULL};
 static const char *thunar[]= {"thunar", NULL};
 static const char *screenshot[]= {"scrot", NULL};
+static const char *calculator[]= {"galculator", NULL};
+static const char *chrome[]= {"google-chrome-stable", NULL};
+static const char *picom[]= {"picom", NULL};
+static const char *killpicom[]= {"killall", "picom", NULL};
+//static const char *surf[]= {"surf", "tradingview.com", NULL};
+static const char *qutebrowser[]= {"qutebrowser", "msnbc.com", NULL};
+static const char *qtcreator[]={"openqtcreator", NULL}; 
+
+
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } }, 	/* Opens dmenu */
-	{ MODKEY,            		XK_Return, spawn,          {.v = termcmd } }, 	/* Opens a Terminal */
+	{ MODKEY|ALT,          		XK_Return, spawn,          {.v = termcmd } }, 	/* Opens a Terminal with Dash Shell (POSIX WORK)*/
+	{ MODKEY,            		XK_Return, spawn,          {.v = fishtermcmd } },	/* Opens a Terminal with Fish Shell */
 	{ MODKEY,		        XK_m,	   spawn,          {.v = roficmd } }, 	/* Opens Rofi Search*/
 	{ MODKEY,		        XK_n,	   spawn,          {.v = rofishow } }, 	/* Rofi Open Window Search*/
 	{ MODKEY|ControlMask,		XK_l,	   spawn,          {.v = screenlock} }, /* Locks Screen */
@@ -108,14 +121,22 @@ static Key keys[] = {
 	
 	{ MODKEY,            		XK_F10,    spawn,          {.v = brightnessup} }, 	/* Screen Brightness Up */
 	{ MODKEY,		        XK_F9,	   spawn,          {.v = brightnessdown} }, 	/* Screen Brightness Down */
-
-	{ MODKEY|ALT,          		XK_b, 	   spawn,          {.v = browser } }, 	/* Opens Web Browser */
 	{ MODKEY|ALT,		        XK_m,	   spawn,          {.v = mt4  } }, 		/* Opens MT4 */
 	{ MODKEY|ALT,		        XK_e,	   spawn,          {.v = mt4edit  } }, 		/* Opens MT4 MetaEditor */
-
+	{ MODKEY|ALT,          		XK_g, 	   spawn,          {.v = chrome } }, 	/* Opens Google Chrome */
+	{ MODKEY|ALT,          		XK_s, 	   spawn,          {.v =qutebrowser} }, 	/* Opens Qute Browser */
+	
+	{ MODKEY|ALT,          		XK_q, 	   spawn,          {.v = qtcreator} }, 	/* Opens QT Creator */
+	
+	{ MODKEY|ALT,          		XK_b, 	   spawn,          {.v = browser } }, 	/* Opens Brave */
 	{ MODKEY|ALT,			XK_r,	   spawn,          {.v = ranger} }, 	/* Opens Ranger in st */
 	{ MODKEY|ALT,			XK_t,	   spawn,          {.v = thunar} }, 	/* Opens GUI File Manager */
+	{ MODKEY|ALT,			XK_c,	   spawn,          {.v = calculator} }, 	/* Opens CALCULATOR */
 	{ MODKEY,			XK_Insert, spawn,          {.v = screenshot} }, 	/* Takes a Screenshot */
+
+	{ MODKEY|ALT,          		XK_p, 	   spawn,          {.v = picom} }, 	/* Runs Picom */
+
+	{ MODKEY|ShiftMask,          	XK_p, 	   spawn,          {.v = killpicom} }, 	/* Kills Picom */
 
 	{ MODKEY,                       XK_b,      togglebar,      {0} }, 		/* Toggles the TOP BAR on/off */
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } }, 	/* Move down in the stack */
@@ -136,6 +157,8 @@ static Key keys[] = {
 
 	{ MODKEY,                       XK_space,  setlayout,      {0} }, 		/*Switches between tiling and monacle, or tiling and floating*/
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} }, 		/* This will float the highlighted/focused window within the workspace*/
+
+
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } }, 	/* VIEW ALL WINDOWS ON SAME WORKSPACE */
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } }, 	/* PLACES ACTIVE WINDOW ON EVERY WORKSPACE */
 
@@ -144,9 +167,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 
-         { MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
-         { MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
-         { MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
+         { MODKEY,                       XK_minus,  setgaps,        {.i = -1 } }, 	/* Decrease the gaps */
+
+         { MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },	/* Increases the size of the gaps */
+         { MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },	/* Sets gaps back to zero */
 
 
 
@@ -169,16 +193,16 @@ static Key keys[] = {
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
-	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
+	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },		/* Click Layout Symbol */
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
-	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
+	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },  /* Super and click with mouse to move */
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
-	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkTagBar,            0,              Button1,        view,           {0} },
-	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
-	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	{ ClkClientWin,         MODKEY|ShiftMask,         Button1,        resizemouse,    {0} },  /* Super and right click to resize floating windows */
+	{ ClkTagBar,            0,              Button1,        view,           {0} }, /* Will move to workspace on the click */
+	{ ClkTagBar,            0,              Button3,        toggleview,     {0} }, /* Will select workspaces to open new window on */
+	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} }, /* Will Move Current Window to Another Workspace */
+	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} }, /* Will Make copy of  window onto workspaces that are rightclicked */
 };
 
